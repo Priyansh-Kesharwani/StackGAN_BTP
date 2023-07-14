@@ -37,7 +37,8 @@ To create the dataset for training, follow these steps:
 ## Dataset Creation Formula
 
 To create a weighted balanced improved dataset, we can use the following formula:
-#D_wbi = f(D_org, T_org, w)
+
+D_wbi = f(D_org, T_org, w)
 
 Where:
 - D_wbi represents the weighted balanced improved dataset.
