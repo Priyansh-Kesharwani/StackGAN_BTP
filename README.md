@@ -1,7 +1,7 @@
 # StackGAN: Text to Photo-realistic Image Synthesis with Stacked Generative Adversarial Networks
 
 This repository provides an implementation of StackGAN, a model for text-to-image synthesis using stacked generative adversarial networks. 
-![Framework](examples/framework.jpg)
+![Framework](/framework.jpg)
 
 ## Dependencies
 
@@ -37,7 +37,7 @@ To create the dataset for training, follow these steps:
 ## Dataset Creation Formula
 
 To create a weighted balanced improved dataset, we can use the following formula:
-D_wbi = f(D_org, T_org, w)
+#D_wbi = f(D_org, T_org, w)
 
 Where:
 - D_wbi represents the weighted balanced improved dataset.
