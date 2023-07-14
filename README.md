@@ -1,84 +1,57 @@
-# StackGAN-pytorch
-- [Tensorflow implementation](https://github.com/hanzhanggit/StackGAN)
+# StackGAN: Text to Photo-realistic Image Synthesis with Stacked Generative Adversarial Networks
 
-- [Inception score evaluation](https://github.com/hanzhanggit/StackGAN-inception-model)
+This repository provides an implementation of StackGAN, a model for text-to-image synthesis using stacked generative adversarial networks. 
+![Framework](examples/framework.jpg)
 
-- [StackGAN-v2-pytorch](https://github.com/hanzhanggit/StackGAN-v2)
+## Dependencies
 
-Pytorch implementation for reproducing COCO results in the paper [StackGAN: Text to Photo-realistic Image Synthesis with Stacked Generative Adversarial Networks](https://arxiv.org/pdf/1612.03242v2.pdf) by Han Zhang, Tao Xu, Hongsheng Li, Shaoting Zhang, Xiaogang Wang, Xiaolei Huang, Dimitris Metaxas. The network structure is slightly different from the tensorflow implementation. 
+- Python 2.7
+- TensorFlow 0.12
 
-<img src="framework.jpg" width="850px" height="370px"/>
+The following optional dependencies are needed if you want to use additional features:
+- Torch (for pre-trained char-CNN-RNN text encoder)
+- skip-thought (for skip-thought text encoder)
 
+To install the required packages, add the project folder to your PYTHONPATH and use pip to install the following packages:
+- prettytensor
+- progressbar
+- python-dateutil
+- easydict
+- pandas
+- torchfile
 
-### Dependencies
-python 2.7
+## Dataset
 
-Pytorch
+To create the dataset for training, follow these steps:
 
-In addition, please add the project folder to PYTHONPATH and `pip install` the following packages:
-- `tensorboard`
-- `python-dateutil`
-- `easydict`
-- `pandas`
-- `torchfile`
+1. Download the preprocessed char-CNN-RNN text embeddings for birds and flowers and save them to the `Data/` directory. You can download them from the following links:
+   - [Birds Text Embeddings](https://drive.google.com/open?id=0B3y_msrWZaXLT1BZdVdycDY5TEE)
+   - [Flowers Text Embeddings](https://drive.google.com/open?id=0B3y_msrWZaXLaUc0UXpmcnhaVmM)
 
+2. Download the bird and flower image datasets and extract them to the `Data/birds/` and `Data/flowers/` directories, respectively. You can find the download links in the original paper.
 
+3. Preprocess the images using the provided scripts:
+   - For birds: `python misc/preprocess_birds.py`
+   - For flowers: `python misc/preprocess_flowers.py`
 
-**Data**
+## Dataset Creation Formula
 
-1. Download our preprocessed char-CNN-RNN text embeddings for [training coco](https://drive.google.com/open?id=0B3y_msrWZaXLQXVzOENCY2E3TlU) and  [evaluating coco](https://drive.google.com/open?id=0B3y_msrWZaXLeEs5MTg0RC1fa0U), save them to `data/coco`.
-  - [Optional] Follow the instructions [reedscot/icml2016](https://github.com/reedscot/icml2016) to download the pretrained char-CNN-RNN text encoders and extract text embeddings.
-2. Download the [coco](http://cocodataset.org/#download) image data. Extract them to `data/coco/`.
+To create a weighted balanced improved dataset, we can use the following formula:
+D_wbi = f(D_org, T_org, w)
 
+Where:
+- D_wbi represents the weighted balanced improved dataset.
+- f is a function that takes the original dataset D_org, the corresponding text descriptions T_org, and a weight vector w as inputs.
+- w is a weight vector that assigns weights to each sample in the dataset.
 
+The function f performs the following steps:
+1. Compute the importance scores for each sample in the dataset based on its text description using a text analysis method such as BERT for embedding.
+2. Normalize the importance scores to ensure they sum up to 1.
+3. Assign weights to each sample in the dataset based on the normalized importance scores.
+4. Select samples from the original dataset D_org according to their weights to create the weighted balanced improved dataset D_wbi.
 
-**Training**
-- The steps to train a StackGAN model on the COCO dataset using our preprocessed embeddings.
-  - Step 1: train Stage-I GAN (e.g., for 120 epochs) `python main.py --cfg cfg/coco_s1.yml --gpu 0`
-  - Step 2: train Stage-II GAN (e.g., for another 120 epochs) `python main.py --cfg cfg/coco_s2.yml --gpu 1`
-- `*.yml` files are example configuration files for training/evaluating our models.
-- If you want to try your own datasets, [here](https://github.com/soumith/ganhacks) are some good tips about how to train GAN. Also, we encourage to try different hyper-parameters and architectures, especially for more complex datasets.
+The weighted balanced improved dataset D_wbi aims to have a more balanced distribution of samples across different text descriptions, with higher weights given to samples that are considered more important based on their text descriptions.
 
-
-
-**Pretrained Model**
-- [StackGAN for coco](https://drive.google.com/open?id=0B3y_msrWZaXLYjNra2ZSSmtVQlE). Download and save it to `models/coco`.
-- **Our current implementation has a higher inception score(10.62±0.19) than reported in the StackGAN paper**
-
-
-
-**Evaluating**
-- Run `python main.py --cfg cfg/coco_eval.yml --gpu 2` to generate samples from captions in COCO validation set.
-
-Examples for COCO:
- 
-![](examples/coco_2.png)
-![](examples/coco_3.png)
-
-Save your favorite pictures generated by our models since the randomness from noise z and conditioning augmentation makes them creative enough to generate objects with different poses and viewpoints from the same discription :smiley:
+Please note that the specific implementation details of the function f and the choice of the weight vector w may vary depending on the specific requirements and characteristics of the dataset.
 
 
-
-### Citing StackGAN
-If you find StackGAN useful in your research, please consider citing:
-
-```
-@inproceedings{han2017stackgan,
-Author = {Han Zhang and Tao Xu and Hongsheng Li and Shaoting Zhang and Xiaogang Wang and Xiaolei Huang and Dimitris Metaxas},
-Title = {StackGAN: Text to Photo-realistic Image Synthesis with Stacked Generative Adversarial Networks},
-Year = {2017},
-booktitle = {{ICCV}},
-}
-```
-
-
-**Our follow-up work**
-
-- [StackGAN++: Realistic Image Synthesis with Stacked Generative Adversarial Networks](https://arxiv.org/abs/1710.10916)
-- [AttnGAN: Fine-Grained Text to Image Generation with Attentional Generative Adversarial Networks](https://arxiv.org/abs/1711.10485) [[supplementary]](https://1drv.ms/b/s!Aj4exx_cRA4ghK5-kUG-EqH7hgknUA)[[code]](https://github.com/taoxugit/AttnGAN)
-
-
-**References**
-
-- Generative Adversarial Text-to-Image Synthesis [Paper](https://arxiv.org/abs/1605.05396) [Code](https://github.com/reedscot/icml2016)
-- Learning Deep Representations of Fine-grained Visual Descriptions [Paper](https://arxiv.org/abs/1605.05395) [Code](https://github.com/reedscot/cvpr2016)
