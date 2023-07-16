@@ -1,7 +1,7 @@
 # StackGAN: Text to Photo-realistic Image Synthesis with Stacked Generative Adversarial Networks
 
 This repository provides an implementation of StackGAN, a model for text-to-image synthesis using stacked generative adversarial networks. 
-![Framework](framework.jpg)
+![Framework](./framework.jpg)
 
 ## Dependencies
 
